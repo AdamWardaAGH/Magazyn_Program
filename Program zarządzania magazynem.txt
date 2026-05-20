@@ -1,0 +1,31 @@
+Program zarządzania magazynem
+Dokumentacja projektu
+
+Cele i założenia
+Celem projektu jest utworzenie standardowego programu do zarządzania magazynów, ich podstawową logiką, odbieraniem zamówień,  przyjmowaniem dostaw, rozdysponowaniem oraz monitorowaniem towaru. Chcemy aby program był na tyle uniwersalny aby można było go dobudować go dla specyficznych potrzeb.
+
+Opis struktury
+Stosujemy standardową architekturę wieloplikową z plikiem main.cpp i zaklarownymi klasami w plikach cpp
+
+class magazyn - opiujse kontener danych
+class towar - kontener danych
+class zamówienie - tworzenie requestów do magazynu
+class dostawy - tworzenie obiektów towary
+class magazynier - klasa obiektu zmieniającego magazyn zarządzanie towarami, metody  maniplacyjne ogólno pojęta
+
+Taki podział spełnia zasady SOLID
+S - Single Responsibility - Każda klasa ma daną role (np. magazyn opisuje budynek i rozkład pułek, nim zarządza magazynier)
+O - Open/Closed - Można rozbudować kod na dodając kolejne klasy np.: stworzyć klasę dostawców i zamawiających lub ciężarówek
+L - Liskov Substitution - TO BĘDZIE JESZE DO WYMYŚLENIA 
+I - Interface Segregation - Każda klasa ma dostosowane metody których używa (co jest częściowe realizowane przez Single Responsibility)
+D - Dependency Inversion - TO BĘDZIE JESZE DO WYMYŚLENIA
+
+*Screen schamtu zależności*
+
+Role w projekcie:
+Backend:
+Adam i Tomek - logika, klasy
+Frontend:
+Kuba - plik main interfejs GUI
+
+
