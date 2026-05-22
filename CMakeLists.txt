@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(magazyn
     main.cpp
+    App.cpp
     imgui.cpp
     imgui_draw.cpp
     imgui_tables.cpp
