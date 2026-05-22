@@ -1,16 +1,16 @@
 #pragma once
-#include"cargo.h"
-#include"storage.h"
 #include<string>
 #include<vector>
+#include"item.h"
+#include"storage.h"
 using namespace std;
-class Supply
+class supply
 {
     public:
     string ID;
-    vector<Cargo> CargoIns;
-    Supply(string ID_);
-    void addSupply(Cargo cargo)const;
+    vector<item> CargoIns;
+    supply(string ID_);
+    void addSupply(item cargo)const;
     void showSupply()const;
     void fillStorageWithSupply()const;
 };

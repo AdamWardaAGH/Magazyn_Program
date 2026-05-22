@@ -1,26 +1,26 @@
-#include"cargo.h"
-#include"storage.h"
 #include<string>
 #include<vector>
+#include"item.h"
+#include"storage.h"
 using namespace std;
-Supply::Supply(string ID_) : ID(ID_) {}
-void Supply::addSupply(Cargo cargo)const
+supply::supply(string ID_) : ID(ID_) {}
+void Supply::addSupply(item item)const
 {
-    CargoIns.push_back(cargo);
+    itemIns.push_back(item);
 }
 void Supply::showSupply()const
 {
     cout<<"Dostawa ID: "<<ID<<endl;
-    if(CargoIns.empty())
+    if(itemIns.empty())
     {
         cout<<"Brak towarów w dostawie."<<endl;
     }
     else
     {
         cout<<"Towary w dostawie:"<<endl;
-        for(size_t i=0; i<CargoIns.size(); i++)
+        for(size_t i=0; i<itemIns.size(); i++)
         {
-            cout<<"- "<<CargoIns[i].nazwa<<", Ilość: "<<CargoIns[i].ilosc<<endl;
+            cout<<"- "<<itemIns[i].nazwa<<", Ilość: "<<itemIns[i].ilosc<<endl;
         }
     }
 }

@@ -1,7 +1,8 @@
-#include"Order.h"
-#include"cargo.h"
 #include<iostream>
 #include<vector>
+#include"order.h"
+#include"item.h"
+
 using namespace std;
 Order::Order(string ID_,  string destination): ID(ID_), destination(destination) {}
 void Order::addCargo(Cargo cargo)

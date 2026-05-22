@@ -2,7 +2,8 @@ Program zarządzania magazynem
 Dokumentacja projektu
 
 Cele i założenia
-Celem projektu jest utworzenie standardowego programu do zarządzania magazynów, ich podstawową logiką, odbieraniem zamówień,  przyjmowaniem dostaw, rozdysponowaniem oraz monitorowaniem towaru. Chcemy aby program był na tyle uniwersalny aby można było go dobudować go dla specyficznych potrzeb.
+Celem projektu jest utworzenie standardowego programu do zarządzania magazynów, ich podstawową logiką, odbieraniem zamówień,  przyjmowaniem dostaw, 
+rozdysponowaniem oraz monitorowaniem towaru. Chcemy aby program był na tyle uniwersalny aby można było go dobudować go dla specyficznych potrzeb.
 
 Opis struktury
 Stosujemy standardową architekturę wieloplikową z plikiem main.cpp i zaklarownymi klasami w plikach cpp
