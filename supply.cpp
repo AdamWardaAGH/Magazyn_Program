@@ -2,7 +2,7 @@
 #include<vector>
 #include"item.h"
 #include"storage.h"
-using namespace std;
+using namespace std; 
 supply::supply(string ID_) : ID(ID_) {}
 void Supply::addSupply(item item)const
 {

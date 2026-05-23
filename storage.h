@@ -8,6 +8,11 @@
 
 class storage {
 public:
+
+    storage(int row_min, int row_max,
+        int column_min, int column_max,
+        int rack_min, int rack_max);
+
     //wartości z danymi
     int row_min, row_max;
     int column_min, column_max;
@@ -15,21 +20,28 @@ public:
     std::map <coord,item> inventory;
     std::map <std::string,std::string> id_list;
 
-    //bufory
-    coord buffer;
-    std::vector<coord> request;
 
-    storage(int row_min, int row_max,
-        int column_min, int column_max,
-        int rack_min, int rack_max);
-    
+
+    //bufory
+    std::vector<std::pair<coord, item>> findItems_buffer;
+    std::vector<std::pair<coord, double>> pick_buffer;
+    std::vector<std::pair<coord, double>> request;
+
+
+
+    //wyświetlanie danych
     std::vector<int> getSize();
+    std::string showallItems();
+    std::string findItems_by_id(std::string input);
+    std::string findItems_by_name(std::string input);
+    std::string findItems_by_coord(std::string input);
+
 
     //dodwanie do listy
     //czyste wyszukiwanie na bazie id,nazyw koordynatów
-
     std::string checkItem_list(item item_);
-    std::string findItem(item item_);
+    void findItems(item item_);
+    std::string checkItems(item item_);
     std::string makeRequest(std::vector<item> list);
     
 
