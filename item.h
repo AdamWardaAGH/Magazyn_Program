@@ -7,11 +7,11 @@ public:
 
     std::string name;
     std::string id_number;
-    double weight;
+    double unit;
 
-    item(std::string name, std::string id_number, double weight);
+    item(std::string name, std::string id_number, double unit);
     std::string getInfo();
-    double getWeight();
+    double getUnit();
 
 
 };
