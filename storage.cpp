@@ -22,11 +22,12 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         column_min(column_min), column_max(column_max),
         rack_min(rack_min), rack_max(rack_max) {}
 
+
 // Wyświetlanie, wszystkie poza getSize wyświetlają item_list która jest "Odpowiedzią" metody, zarówno błędu jaki i wyniku
 
     std::string storage::getSize(){ return std::to_string(1+row_max-row_min)+" "+std::to_string(1+column_max-column_min)+" "+std::to_string(1+rack_max-rack_min); }
 
-    std::string storage::showallItems(){
+    std::string storage::showallItems(){  //Jeden duży string odgradzany /n 
         std::string item_list = "";
         for(auto& i : inventory){
             auto [x, y, z] = i.first.coordinates;
@@ -34,7 +35,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
             "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
         } 
         return item_list;
-    };
+    }
 
     std::string storage::findItems_by_id(std::string input){
         std::string item_list = "";
@@ -47,7 +48,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         } 
         if(item_list == ""){item_list = "Nieznaleniono, żadnych przedmiotów";};
         return item_list;
-    };
+    }
 
 
     std::string storage::findItems_by_name(std::string input){
@@ -55,13 +56,13 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         for(auto& i : inventory){
             if(input==i.second.name){
             auto [x, y, z] = i.first.coordinates;
-            item_list = "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+            item_list += "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
             "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
             }
         }
         if(item_list == ""){item_list = "Nieznaleniono, żadnych przedmiotów";};
         return item_list;
-    };
+    }
 
 
     std::string storage::findItems_by_coord(std::string input){     //Uznajmy że input to: x,y,z funkcja rozkłąda przecinki, można uprościć
@@ -79,7 +80,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
             }
             return item_list;
 
-    };
+    }
 
 
 
@@ -87,6 +88,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
 
 
 // Logika
+    //Większość wyjść to std::string aby dawać feedback dla warunków, czy coś zadzaiałało czy nie, dla wyświetlania stanu
     //sprawdza czy przedmiot wogóle jest na liście
     std::string storage::checkItem_list(item item_){ 
         for(auto& i : id_list){
@@ -96,6 +98,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
             }
         } 
         id_list.insert({item_.id_number, item_.name});
+        return "";
     }
 
 
@@ -134,20 +137,6 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
     }
 
 
-    std::string storage::orderRequest(std::vector<item> list){
-        order_request.clear();
-        for(auto& i : list){
-            std::string id_check = storage::checkItem_list(i);
-            if(id_check == "Złe przypisane id"){ return id_check; }  //ZWRACA BŁĄD
-            std::string item_check = storage::checkItems(i);
-            if(item_check == "Nie znaleziono dostatecznej ilości produktów" || item_check == "Nie znaleziono żadnych przedmiotów"){ return item_check; }  //ZWRACA BŁĄD
-            
-            order_request.insert(order_request.end(), pick_buffer.begin(), pick_buffer.end());
-        }
-        return "Zamówienie zaakceptowano do przetwarzania";
-    } 
-
-
     std::string storage::assignStorage(item item_){
         for (int row = row_min; row <= row_max; row++) {
             for (int column = column_min; column <= column_max; column++) {
@@ -165,6 +154,20 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
     }
 
 
+    std::string storage::orderRequest(std::vector<item> list){
+        order_request.clear();
+        for(auto& i : list){
+            std::string id_check = storage::checkItem_list(i);
+            if(id_check == "Złe przypisane id"){ return id_check; }  //ZWRACA BŁĄD
+            std::string item_check = storage::checkItems(i);
+            if(item_check == "Nie znaleziono dostatecznej ilości produktów" || item_check == "Nie znaleziono żadnych przedmiotów"){ return item_check; }  //ZWRACA BŁĄD
+            
+            order_request.insert(order_request.end(), pick_buffer.begin(), pick_buffer.end());
+        }
+        return "Zaakceptowano";
+    } 
+
+
     std::string storage::supplyRequest(std::vector<item> list){
         supply_request.clear();
         for(auto& i : list){
@@ -173,7 +176,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
             std::string item_check = storage::assignStorage(i);
             if(item_check == "Brak wolnego miejsca"){ return item_check; }  //ZWRACA BŁĄD
         }
-        return "Zamówienie zaakceptowano do przetwarzania";
+        return "Zaakceptowano";
     }
 
     

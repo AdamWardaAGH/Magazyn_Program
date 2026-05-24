@@ -1,3 +1,4 @@
+#include<iostream>
 #include<string>
 #include<vector>
 #include"item.h"
@@ -14,14 +15,17 @@ void supply::addItems(){
         double buffer_3;
         while(1){
             //name
+            std::cout << "\nPodaj nazwę: " << std::endl;
             std::cin >> in;
             if(in == "exit"){break;}
             buffer_1 = in;
             //id
+            std::cout << "\nPodaj id: " << std::endl;
             std::cin >> in;
             if(in == "exit"){break;}
             buffer_2 = in;
             //unit
+            std::cout << "\nPodaj jednostkę: " << std::endl;
             std::cin >> in;
             if(in == "exit"){break;}
             buffer_3 = std::stod(in);

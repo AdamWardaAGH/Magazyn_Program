@@ -19,6 +19,7 @@ setlocale(LC_ALL,"pl_PL.UTF-8");
     
 //wstępna kofiguracja
     storage warehouse(1, 10, 1, 20, 1, 15);
+    storeman man;
     supply supplier;
     order orderer;
 
@@ -60,7 +61,7 @@ setlocale(LC_ALL,"pl_PL.UTF-8");
     std::cout << "1. Wyświetl magazyn" << "\n";
     std::cout << "2. Szukaj po id" << "\n";
     std::cout << "3. Szukaj po nazwie" << "\n";
-    std::cout << "4. Szukaj po koordunatach" << "\n";
+    std::cout << "4. Szukaj po koordynatach" << "\n";
     std::cout << "5. Stwórz zamówienie od odbiorcy" << "\n";
     std::cout << "6. Stwórz zamówienie do dostawcy" << "\n";
     std::cout << "0. Wyjście" << "\n";
@@ -106,12 +107,18 @@ setlocale(LC_ALL,"pl_PL.UTF-8");
 
         case 5:
             orderer.addItems();
-            warehouse.orderRequest(orderer.order_list);
+            s = warehouse.orderRequest(orderer.order_list);
+            std::cout << s << std::endl;
+            s = man.executeOrder(s,warehouse);
+            std::cout << s << std::endl;
             break;
 
         case 6:
             supplier.addItems();
-            warehouse.supplyRequest(supplier.supply_list);
+            s = warehouse.supplyRequest(supplier.supply_list);
+            std::cout << s << std::endl;
+            s = man.executeSupply(s,warehouse);
+            std::cout << s << std::endl;
             break;
 
         default:

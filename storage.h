@@ -28,6 +28,8 @@ public:
     std::string findItems_by_coord(std::string input);
 
 
+
+
     //odbieranie instrukcji do zamówienia
     std::string checkItem_list(item item_);
     void findItems(item item_);
@@ -42,6 +44,7 @@ public:
     std::vector<std::pair<coord, double>> order_request;
     std::vector<std::pair<coord, item>> supply_request;
 
+    
     storage(int row_min, int row_max,
         int column_min, int column_max,
         int rack_min, int rack_max);
