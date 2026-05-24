@@ -9,10 +9,6 @@
 class storage {
 public:
 
-    storage(int row_min, int row_max,
-        int column_min, int column_max,
-        int rack_min, int rack_max);
-
     //wartości z danymi
     int row_min, row_max;
     int column_min, column_max;
@@ -20,15 +16,9 @@ public:
     std::map <coord,item> inventory;
     std::map <std::string,std::string> id_list;
 
-
-
     //bufory
     std::vector<std::pair<coord, item>> findItems_buffer;   
     std::vector<std::pair<coord, double>> pick_buffer;      
-    std::vector<std::pair<coord, double>> order_request;
-
-    std::vector<std::pair<coord, item>> supply_request;
-
 
     //wyświetlanie danych
     std::string getSize();
@@ -49,4 +39,10 @@ public:
     std::string supplyRequest(std::vector<item> list);
     std::string assignStorage(item item_);
 
+    std::vector<std::pair<coord, double>> order_request;
+    std::vector<std::pair<coord, item>> supply_request;
+
+    storage(int row_min, int row_max,
+        int column_min, int column_max,
+        int rack_min, int rack_max);
 };

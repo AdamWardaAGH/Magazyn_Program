@@ -14,4 +14,4 @@ Więc dobrze mieć okno na możliwie dobudowanie koordynatów np. dodatkowe wart
 
     std::tuple<int,int,int> coord::getLocation(){ return coordinates; } 
 
-
+    

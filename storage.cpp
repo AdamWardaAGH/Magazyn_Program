@@ -16,13 +16,13 @@ list w std::map przechowuje id jako klucza (list.first) i przypisane nazwy produ
 storage w std::map przechowuje dane o tym co gdzie jest
 szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
 */
-    
 
-// Wyświetlanie 
     storage::storage(int row_min, int row_max, int column_min, int column_max, int rack_min, int rack_max) : 
         row_min(row_min), row_max(row_max),
         column_min(column_min), column_max(column_max),
         rack_min(rack_min), rack_max(rack_max) {}
+
+// Wyświetlanie, wszystkie poza getSize wyświetlają item_list która jest "Odpowiedzią" metody, zarówno błędu jaki i wyniku
 
     std::string storage::getSize(){ return std::to_string(1+row_max-row_min)+" "+std::to_string(1+column_max-column_min)+" "+std::to_string(1+rack_max-rack_min); }
 
@@ -30,7 +30,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         std::string item_list = "";
         for(auto& i : inventory){
             auto [x, y, z] = i.first.coordinates;
-            item_list =+ "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+            item_list += "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
             "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
         } 
         return item_list;
@@ -41,7 +41,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         for(auto& i : inventory){
             if(input==i.second.id_number){
             auto [x, y, z] = i.first.coordinates;
-            item_list =+ "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+            item_list += "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
             "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
             }
         } 
@@ -55,7 +55,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         for(auto& i : inventory){
             if(input==i.second.name){
             auto [x, y, z] = i.first.coordinates;
-            item_list =+ "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+            item_list = "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
             "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
             }
         }
@@ -64,7 +64,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
     };
 
 
-    std::string storage::findItems_by_coord(std::string input){     //Uznajmy że input to: x,y,z
+    std::string storage::findItems_by_coord(std::string input){     //Uznajmy że input to: x,y,z funkcja rozkłąda przecinki, można uprościć
             std::string item_list = "";
             std::stringstream ss(input);
             int x, y, z;
@@ -91,8 +91,8 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
     std::string storage::checkItem_list(item item_){ 
         for(auto& i : id_list){
             if(item_.id_number == i.first ){
-                if(item_.name == i.second){ return; }
-            return "Id w zamówieni nie pasuje do listy katalogowej";
+                if(item_.name == i.second){ return "Znaleziono id"; }
+            return "Złe przypisane id";
             }
         } 
         id_list.insert({item_.id_number, item_.name});
@@ -140,8 +140,7 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
             std::string id_check = storage::checkItem_list(i);
             if(id_check == "Złe przypisane id"){ return id_check; }  //ZWRACA BŁĄD
             std::string item_check = storage::checkItems(i);
-            if(item_check == "Nie znaleziono dostatecznej ilości produktów" ||
-            item_check == "Nie znaleziono żadnych przedmiotów"){ return item_check; }  //ZWRACA BŁĄD
+            if(item_check == "Nie znaleziono dostatecznej ilości produktów" || item_check == "Nie znaleziono żadnych przedmiotów"){ return item_check; }  //ZWRACA BŁĄD
             
             order_request.insert(order_request.end(), pick_buffer.begin(), pick_buffer.end());
         }
@@ -175,7 +174,6 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
             if(item_check == "Brak wolnego miejsca"){ return item_check; }  //ZWRACA BŁĄD
         }
         return "Zamówienie zaakceptowano do przetwarzania";
-
     }
 
     

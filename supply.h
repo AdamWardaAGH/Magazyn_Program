@@ -9,5 +9,4 @@ class supply{
     std::vector<item> supply_list;
     
     void addItems();
-    
 };

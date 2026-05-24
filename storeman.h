@@ -13,11 +13,7 @@ class storeman : public storage{
 public:
     storeman();
 
-    
-
-    
-
-
-
+    std::string executeOrder();
+    std::string executeSupply();
 };
 

@@ -12,6 +12,9 @@ public:
     coord(int row, int column, int rack);
     std::tuple<int,int,int> getLocation();
 
+    bool operator<(const coord& other) const {
+        return coordinates < other.coordinates;
+    }
 
 
 
