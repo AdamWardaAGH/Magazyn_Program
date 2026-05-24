@@ -9,11 +9,9 @@
 Klasa jest odpowiedzialna za edytowanie magazynu (std::map storage) dlatego jest pochodną aby mieć dostęp i móc zmieniać
 */
 
-class storeman : public storage{
+class storeman {
 public:
-    storeman();
-
-    std::string executeOrder();
-    std::string executeSupply();
+    std::string executeOrder(std::string activation,storage& warehouse);
+    std::string executeSupply(std::string activation,storage& warehouse);
 };
 
