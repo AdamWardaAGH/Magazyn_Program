@@ -8,6 +8,7 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
 #include <SDL_opengl.h>
+#include <iostream>
 
 class App {
 private:
@@ -27,8 +28,26 @@ private:
     void wItemShow();
     void wItemAdd();
     void wListItems();
+
+    void wOrderShow();
+    void wOrderAdd();
+    void wSupplyshow();
+    void wSupplyAdd();
+
+    void wAgentShow();
+    void wAgentAdd();
+
+
     void clearBuf();
     void clearBut();
+
+    //storage Storage;
+    //zmienne do wyświetlania
+    //activeItem
+    //activeOrder
+    //activeSupply
+    //activeAgent
+    //vector <item> newOrderItems;
 public:
     App();
     ~App();
@@ -46,6 +65,14 @@ Buttons:
 4 - item ID
 5 - showItemList
 6 - display/search
+    order
+7 - wOrderShow
+8 - wOrderAdd
+9 - wSupplyshow
+10- wSupplyAdd
+11- wAgentShow
+12- wAgentAdd
+13- logic of OrderShow
 
 */
 
