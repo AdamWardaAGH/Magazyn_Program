@@ -31,7 +31,7 @@ public:
 
 
     //wyświetlanie danych
-    std::vector<int> getSize();
+    std::string getSize();
     std::string showallItems();
     std::string findItems_by_id(std::string input);
     std::string findItems_by_name(std::string input);

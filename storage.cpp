@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -23,30 +24,60 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         column_min(column_min), column_max(column_max),
         rack_min(rack_min), rack_max(rack_max) {}
 
-    std::vector<int> storage::getSize(){ return {1+row_max-row_min, 1+column_max-column_min, 1+rack_max-rack_min}; }
+    std::string storage::getSize(){ return std::to_string(1+row_max-row_min)+" "+std::to_string(1+column_max-column_min)+" "+std::to_string(1+rack_max-rack_min); }
 
-//DO MODYFIKACJI
     std::string storage::showallItems(){
-        std::string item_list;
+        std::string item_list = "";
         for(auto& i : inventory){
             auto [x, y, z] = i.first.coordinates;
-            item_list = "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+            item_list =+ "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
             "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
         } 
+        return item_list;
     };
 
-//DO DOKOŃCENIA
-    std::string findItems_by_id(std::string input){
-
+    std::string storage::findItems_by_id(std::string input){
+        std::string item_list = "";
+        for(auto& i : inventory){
+            if(input==i.second.id_number){
+            auto [x, y, z] = i.first.coordinates;
+            item_list =+ "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+            "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
+            }
+        } 
+        if(item_list == ""){item_list = "Nieznaleniono, żadnych przedmiotów";};
+        return item_list;
     };
 
 
-    std::string findItems_by_name(std::string input){
-
+    std::string storage::findItems_by_name(std::string input){
+        std::string item_list = "";
+        for(auto& i : inventory){
+            if(input==i.second.name){
+            auto [x, y, z] = i.first.coordinates;
+            item_list =+ "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+            "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
+            }
+        }
+        if(item_list == ""){item_list = "Nieznaleniono, żadnych przedmiotów";};
+        return item_list;
     };
 
 
-    std::string findItems_by_coord(std::string input){
+    std::string storage::findItems_by_coord(std::string input){     //Uznajmy że input to: x,y,z
+            std::string item_list = "";
+            std::stringstream ss(input);
+            int x, y, z;
+            char comma;
+            ss >> x >> comma >> y >> comma >> z;
+            try {
+                item& i = inventory.at({x,y,z});
+                item_list = "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
+                "  Numer id: "+i.id_number+"  Nazwa: "+i.name+"  Ilość: "+std::to_string(i.unit)+"\n";
+            } catch (std::out_of_range& e) {
+                item_list = "Nieznaleniono, żadnych przedmiotów";
+            }
+            return item_list;
 
     };
 
