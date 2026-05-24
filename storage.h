@@ -23,10 +23,11 @@ public:
 
 
     //bufory
-    std::vector<std::pair<coord, item>> findItems_buffer;
-    std::vector<std::pair<coord, double>> pick_buffer;
-    std::vector<std::pair<coord, double>> request;
+    std::vector<std::pair<coord, item>> findItems_buffer;   
+    std::vector<std::pair<coord, double>> pick_buffer;      
+    std::vector<std::pair<coord, double>> order_request;
 
+    std::vector<std::pair<coord, item>> supply_request;
 
 
     //wyświetlanie danych
@@ -37,12 +38,15 @@ public:
     std::string findItems_by_coord(std::string input);
 
 
-    //dodwanie do listy
-    //czyste wyszukiwanie na bazie id,nazyw koordynatów
+    //odbieranie instrukcji do zamówienia
     std::string checkItem_list(item item_);
     void findItems(item item_);
     std::string checkItems(item item_);
-    std::string makeRequest(std::vector<item> list);
-    
+    std::string orderRequest(std::vector<item> list);
+
+    //podawanie instrukcji do dostawcy
+    void addItems();
+    std::string supplyRequest(std::vector<item> list);
+    std::string assignStorage(item item_);
 
 };

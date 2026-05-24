@@ -5,6 +5,8 @@
 #include <map>
 #include "storage.h"
 #include "coord.h"
+#include "supply.h"
+#include "order.h"
 
 /*
 Ma posiadać podstawowe info odnośnie wielokości magazynu, jaka jest początkowy i końcowy numer danej półki
@@ -81,12 +83,13 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
     pick_buffer.clear();
     std::string id = item_.id_number;
     double left = item_.unit;
-    findItems(item_);  // wypełnia findAll_buffer
+    findItems(item_);
+    if (findItems_buffer.empty()) { return "Nie znaleziono żadnych przedmiotów"; }
 
-        for (auto& [loc, item] : findItems_buffer) {
+        for (auto& [loc, item_p] : findItems_buffer) {
             if (left <= 0) break;
 
-            double take = item.unit;
+            double take = std::min(item_p.unit,left);
             pick_buffer.push_back({loc, take});
             left -= take;
             if (left < 0){ 
@@ -100,18 +103,52 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
     }
 
 
-    std::string storage::makeRequest(std::vector<item> list){
-        request.clear();
+    std::string storage::orderRequest(std::vector<item> list){
+        order_request.clear();
         for(auto& i : list){
             std::string id_check = storage::checkItem_list(i);
             if(id_check == "Złe przypisane id"){ return id_check; }  //ZWRACA BŁĄD
-            std::string item_check = storage::checkItem_list(i);
-            if(item_check == "Nie znaleziono dostatecznej ilości produktów"){ return item_check; }  //ZWRACA BŁĄD
+            std::string item_check = storage::checkItems(i);
+            if(item_check == "Nie znaleziono dostatecznej ilości produktów" ||
+            item_check == "Nie znaleziono żadnych przedmiotów"){ return item_check; }  //ZWRACA BŁĄD
             
-            request.insert(request.end(), pick_buffer.begin(), pick_buffer.end());
+            order_request.insert(order_request.end(), pick_buffer.begin(), pick_buffer.end());
         }
-        return "Załadowa ";
+        return "Zamówienie zaakceptowano do przetwarzania";
     } 
+
+
+    std::string storage::assignStorage(item item_){
+        for (int row = row_min; row <= row_max; row++) {
+            for (int column = column_min; column <= column_max; column++) {
+                for (int rack = rack_min; rack <= rack_max; rack++) {
+                    coord c(row, column, rack);
+                    if (inventory.find(c) == inventory.end()) {
+                        coord loc(row, column, rack);
+                        supply_request.push_back({loc,item_});
+                        return "Znaleziono miejsce";  // pierwsze wolne miejsce
+                    }
+                }
+            }
+        }
+    return "Brak wolnego miejsca";
+    }
+
+
+    std::string storage::supplyRequest(std::vector<item> list){
+        supply_request.clear();
+        for(auto& i : list){
+            std::string id_check = storage::checkItem_list(i);
+            if(id_check == "Złe przypisane id"){ return id_check; }  //ZWRACA BŁĄD
+            std::string item_check = storage::assignStorage(i);
+            if(item_check == "Brak wolnego miejsca"){ return item_check; }  //ZWRACA BŁĄD
+        }
+        return "Zamówienie zaakceptowano do przetwarzania";
+
+    }
+
+    
+
 
 
 

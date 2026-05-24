@@ -3,14 +3,11 @@
 #include<vector>
 #include"item.h"
 #include"storage.h"
-using namespace std;
-class supply
-{
+class supply{
     public:
-    string ID;
-    vector<item> CargoIns;
-    supply(string ID_);
-    void addSupply(item cargo)const;
-    void showSupply()const;
-    void fillStorageWithSupply()const;
+
+    std::vector<item> supply_list;
+    
+    void addItems();
+    
 };

@@ -4,8 +4,7 @@
 #include"item.h"
 #include"storage.h"
 using namespace std;
-class order
-{
+class order{
     public:
     string ID, destination;
     vector<item> cargoOuts;
