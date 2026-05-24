@@ -3,6 +3,9 @@
 //UWAGA - KAŻDY PLIK TRZEBA DODAĆ DO CMAKELISTS
 #include <ctime>
 #include <iostream>
+#include "storage.h"
+#include "order.h"
+#include "supply.h"
 
 //graphics import
 #include <SDL.h>
@@ -11,11 +14,14 @@
 #include <imgui_impl_opengl3.h>
 #include <SDL_opengl.h>
 
+using namespace std;
+
 class App {
 private:
     void handleEvents();
     void render();
     void initPolish();
+    void storeInit();//debug in
 
     SDL_Window* window;
     SDL_GLContext gl;
@@ -44,11 +50,13 @@ private:
     void clearBuf();
     void clearBut();
 
-    //storage Storage;
+    storage warehouse;
+    supply supplier;
+    order orderer;
     //zmienne do wyświetlania
-    //activeItem
-    //activeOrder
-    //activeSupply
+    item activeItem;
+    order activeOrder;
+    supply activeSupply;
     //activeAgent
     //vector <item> newOrderItems;
 public:
@@ -80,9 +88,8 @@ Buttons:
 
 */
 
-/*cheatsheet: http://imgui.net/api/ImGui.GUI.html
+/*
 komendy do terminala do buildowania
-
 cmake -B build -G "MinGW Makefiles"
 cmake --build build
 

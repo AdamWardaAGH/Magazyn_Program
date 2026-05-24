@@ -10,6 +10,7 @@ public:
     double unit;
 
     item(std::string name, std::string id_number, double unit);
+    item();
     std::string getInfo();
     double getUnit();
 

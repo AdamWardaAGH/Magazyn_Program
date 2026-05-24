@@ -87,6 +87,8 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
 
 
 // Logika
+    //dodawanie itemu
+
     //sprawdza czy przedmiot wogóle jest na liście
     std::string storage::checkItem_list(item item_){ 
         for(auto& i : id_list){

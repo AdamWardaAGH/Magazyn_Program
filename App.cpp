@@ -1,7 +1,7 @@
 #include "App.h"
 
 //konstruktor
-App::App() {
+App::App() : warehouse(1, 10, 1, 20, 1, 15){
     SDL_Init(SDL_INIT_VIDEO);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -45,6 +45,8 @@ App::App() {
     s.Colors[ImGuiCol_TabHovered] = ImVec4(0.22f, 0.54f, 0.87f, 1.0f);
     s.Colors[ImGuiCol_TabActive] = ImVec4(0.09f, 0.37f, 0.65f, 1.0f);
     
+    //debugging
+    storeInit();
 }
 
 //destruktor
@@ -80,6 +82,38 @@ void App::initPolish(){
     //font wybór jest tutaj
     io.Fonts->AddFontFromFileTTF("arial.ttf", 16.0f, nullptr, ranges.Data);
     io.Fonts->Build();
+}
+
+//funkcja do władowania testowego magazynu
+void App::storeInit(){
+    warehouse.id_list = {     
+    {"SCR-001", "Śrubka"},
+    {"KEY-002", "Klucz"},
+    {"NUT-003", "Nakrętka"},
+    {"BOL-004", "Bolt"},
+    {"WAR-005", "Wkręt"},
+    {"PLA-006", "Płytka"},
+    {"SPR-007", "Sprężyna"},
+    {"CAB-008", "Kabel"},
+    {"TUB-009", "Rurka"},
+    {"ROD-010", "Pręt"} 
+    };
+
+    warehouse.inventory = {
+    {coord(0,0,0), item("Śrubka",  "SCR-001", 0.5)},
+    {coord(0,0,1), item("Klucz",   "KEY-002", 1.2)},
+    {coord(0,1,0), item("Nakrętka","NUT-003", 0.3)},
+    {coord(0,1,1), item("Bolt",    "BOL-004", 0.8)},
+    {coord(0,2,0), item("Wkręt",   "WAR-005", 0.4)},
+    {coord(1,0,0), item("Płytka",  "PLA-006", 2.1)},
+    {coord(1,0,1), item("Sprężyna","SPR-007", 0.6)},
+    {coord(1,1,0), item("Kabel",   "CAB-008", 3.0)},
+    {coord(1,1,1), item("Rurka",   "TUB-009", 1.5)},
+    {coord(1,2,0), item("Pręt",    "ROD-010", 4.2)},
+    {coord(1,2,1), item("Bolt",    "BOL-004", 0.2)},
+    {coord(1,2,2), item("Sprężyna","SPR-007", 0.6)}
+    };
+
 }
 
 //główna pętla
@@ -330,7 +364,7 @@ void App::wItemAdd(){
         {
             //funckja sprawdzania poprawności zmiennych
 
-            //storage.addItem();
+            
 
             but[0]=false;
         }
@@ -344,11 +378,7 @@ void App::wListItems(){
         {
             but[5]=false;
         }
-    /*
-    Storage.showallItems()
-    for(){
-    }
-    */
+    ImGui::Text(warehouse.showallItems().c_str());
     ImGui::End();
 }
 
@@ -374,7 +404,38 @@ void App::wOrderAdd(){
     ImGui::InputText("##idOrder", buf0, sizeof(buf0));
     ImGui::Text("Cel docelowy: ");
     ImGui::InputText("##destinationOrder", buf1, sizeof(buf1));
-    //for(items in newOrderItems)
+    for(int i=0;i< orderer.order_list.size();i++){
+        ImGui::Text("Nazwa: ");
+        string name="##name"+i;
+        //auto na=orderer.order_list.at(i).name.c_str();
+        std::string& s = orderer.order_list.at(i).name;
+        char temp[128];
+        strncpy(temp, s.c_str(), sizeof(temp));
+        //char temp[128]=orderer.order_list.at(i).name.c_str();
+        ImGui::InputText(name.c_str(), temp, sizeof(temp));
+        s=temp;
+
+        ImGui::Text("Id: ");
+        string name2="##id"+i;
+        //auto d=orderer.order_list.at(i).id_number.c_str();
+        std::string& s2 = orderer.order_list.at(i).id_number;
+        char temp2[128];
+        strncpy(temp2, s2.c_str(), sizeof(temp2));
+        //char temp2[128]=orderer.order_list.at(i).id_number.c_str();
+        ImGui::InputText(name2.c_str(), temp2, sizeof(temp2));
+        s2=temp2;
+
+        ImGui::Text("Ilość: ");
+        string name3="##count"+i;
+        //auto co=orderer.order_list.at(i).unit.c_str();
+        double& s3 = orderer.order_list.at(i).unit;
+        char temp3[128];
+        strncpy(temp3, std::to_string(s3).c_str(), sizeof(temp3));
+        //char temp3[128]=orderer.order_list.at(i).unit.c_str();
+        ImGui::InputText(name3.c_str(), temp3, sizeof(temp3));
+        s3 = std::stod(temp3);
+
+    }
     /*
     //wymyśleć rozwiązanie na 50000 różnych inputext
     ImGui::Text("Nazwa: ");
@@ -386,8 +447,7 @@ void App::wOrderAdd(){
     */
     if (ImGui::Button("Dodaj item")) 
         {
-            //newOrderItems.pushback
-    
+            orderer.addItem("","","1");
         }
     
     //button 1

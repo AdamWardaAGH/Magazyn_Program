@@ -6,6 +6,12 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(magazyn
     main.cpp
     App.cpp
+    storage.cpp
+    order.cpp
+    supply.cpp
+    item.cpp
+    storeman.cpp
+    coord.cpp
     imgui.cpp
     imgui_draw.cpp
     imgui_tables.cpp

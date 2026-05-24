@@ -8,5 +8,5 @@ class supply{
 
     std::vector<item> supply_list;
     
-    void addItems();
+    void addItem(std::string buffer_1,std::string buffer_2,std::string bufr_3);
 };
