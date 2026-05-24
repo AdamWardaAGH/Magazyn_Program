@@ -10,7 +10,9 @@
 /*
 Przyjmuje order_request i supply_request i zmienia magazyn na podstawie instrukcji
 */
+storeman::storeman(){}
 
+storeman::storeman(std::string name_):name(name_){}
 
 std::string storeman::executeOrder(std::string activation,storage& warehouse){
     if(activation == "Zaakceptowano"){

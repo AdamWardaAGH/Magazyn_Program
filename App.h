@@ -35,8 +35,9 @@ private:
     char searchbuf[256]="";
     time_t timestamp;
 
+    void wMain();
+    void wMan();
     void wItemShow();
-    void wItemAdd();
     void wListItems();
 
     void wOrderShow();
@@ -55,11 +56,12 @@ private:
     supply supplier;
     order orderer;
     //zmienne do wyświetlania
-    item activeItem;
+    string activeItem;
     order activeOrder;
     supply activeSupply;
-    //activeAgent
-    //vector <item> newOrderItems;
+    vector<storeman>Agents;
+    int activeAgent;
+    string s;
 public:
     App();
     ~App();
@@ -70,7 +72,7 @@ public:
 Buttons:
     main menu
     item
-0 - add item
+0 - 
 1 - show item
 2 - coordinates
 3 - item name

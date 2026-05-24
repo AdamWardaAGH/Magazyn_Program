@@ -114,6 +114,8 @@ void App::storeInit(){
     {coord(1,2,2), item("Sprężyna","SPR-007", 0.6)}
     };
 
+    Agents.push_back(storeman("Admin"));
+    activeAgent=0;
 }
 
 //główna pętla
@@ -139,6 +141,51 @@ void App::render() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
+    wMain();
+    wMan();
+
+    //====other windows drawing====
+    if(but[0]){
+        wItemAdd(); //
+    }
+    if(but[6]){
+        //if active item empty
+        //ImGui::Text("Could not find the item, try again");
+        //else
+        wItemShow();
+    }
+    if(but[5]){
+        wListItems();
+    }
+    if(but[7]){
+        wOrderShow();
+    }
+    if(but[8]){
+        wOrderAdd();
+    }
+    if(but[9]){
+        wSupplyshow();
+    }
+    if(but[10]){
+        wSupplyAdd();
+    }
+    if(but[11]){
+        wAgentShow();
+    }
+    if(but[12]){
+        wAgentAdd();
+    }
+    ImGui::Render();
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    SDL_GL_SwapWindow(window);
+}
+
+//=====WINDOW SECTION=====
+
+//main window
+void App::wMain(){
     //okno
     ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(440, 600), ImGuiCond_Always);
@@ -156,11 +203,6 @@ void App::render() {
 
     //item
     ImGui::Text("Przedmioty");
-    //add item
-    if (ImGui::Button("Dodaj item")) 
-        {
-            but[0]=!but[0];
-        }
     //show item
     if (ImGui::Button("Pokaż item")) 
         {
@@ -203,6 +245,9 @@ void App::render() {
         else if(but[4])ImGui::InputText("ID", searchbuf, sizeof(searchbuf));
         if (ImGui::Button("Szukaj")) 
         {
+            if(but[2])activeItem = warehouse.findItems_by_coord(searchbuf);
+            else if(but[3])activeItem = warehouse.findItems_by_name(searchbuf);
+            else if(but[4])activeItem = warehouse.findItems_by_id(searchbuf);
             but[6] = true;
             //if but else if but else if but
             //findItem_by_coord(); 
@@ -218,7 +263,8 @@ void App::render() {
     
     //items end
 
-    //orders and supplies
+    //order
+    //show order
     ImGui::Text("Zamówienia");
     if (ImGui::Button("Pokaż zamówienie")) 
         {
@@ -236,14 +282,16 @@ void App::render() {
             ImGui::InputText("Id", searchbuf, sizeof(searchbuf));
         if (ImGui::Button("Szukaj")) 
         {
-            but[8] = !but[8];
+            but[7] = !but[7];
         }
     }
-    //show item
+    //add order
     if (ImGui::Button("Dodaj zamówienie")) 
         {
             but[8] = !but[8];
         }
+    //supply
+    //show supply
     ImGui::Text("Uzupełnianie braków");
     if (ImGui::Button("Pokaż zamówienie do magazynu")) 
         {
@@ -254,7 +302,6 @@ void App::render() {
             but[3] =false;
             but[4] =false;
             but[13]=false;
-            
         }
     if(but[14]){
         ImGui::Text("");
@@ -266,13 +313,13 @@ void App::render() {
         }
     }
         
-    //show item
+    //add supply
     if (ImGui::Button("Dodaj zamówienie do magazynu")) 
         {
             but[10] = !but[10];
         }
     //zależne od funkcjonalności magazyniera
-    /*if (ImGui::Button("Pokaż magazyniera")) 
+    if (ImGui::Button("Zarządzaj magazynierami")) 
         {
             but[11]=!but[11];
         }
@@ -281,60 +328,43 @@ void App::render() {
         {
             but[12] = !but[12];
         }
-            */
+        
 
     ImGui::Text("");
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.1f, 1.0f));
     if (ImGui::Button("Wyjdź")) 
         {
             running=false;
         }
+    ImGui::PopStyleColor();
     ImGui::End();
-    //koniec okna 2
-
-    //====window drawing====
-    if(but[0]){
-        wItemAdd(); //
-    }
-    if(but[6]){
-        //if active item empty
-        //ImGui::Text("Could not find the item, try again");
-        //else
-        wItemShow();
-    }
-    if(but[5]){
-        wListItems();
-    }
-    if(but[7]){
-        wOrderShow();
-    }
-    if(but[8]){
-        wOrderAdd();
-    }
-    if(but[9]){
-        wSupplyshow();
-    }
-    if(but[10]){
-        wSupplyAdd();
-    }
-    if(but[11]){
-        wAgentShow();
-    }
-    if(but[12]){
-        wAgentAdd();
-    }
-    ImGui::Render();
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    SDL_GL_SwapWindow(window);
 }
 
-//=====WINDOW SECTION=====
+void App::wMan(){
+    ImGui::SetNextWindowPos(ImVec2(490, 50), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(200, 70), ImGuiCond_Always);
+    ImGui::Begin("Aktywny pracownik", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    // w render():
+    const char* tempp = Agents.at(activeAgent).name.c_str();
+
+    if (ImGui::BeginCombo("##pracownik", tempp)) {
+        for (int i = 0; i < Agents.size(); i++) {
+            bool selected = (activeAgent == i);
+            if (ImGui::Selectable(Agents.at(i).name.c_str(), selected)) {
+                activeAgent = i;
+            }
+            if (selected)
+                ImGui::SetItemDefaultFocus(); // highlight the current one
+        }
+    ImGui::EndCombo();
+    }
+    ImGui::End();
+}
 
 //do wypełnienia o branie i wyświetlanie itemu
 void App::wItemShow(){
     ImGui::Begin("Przedmiot");
-    if (ImGui::Button("Wyjdź")) 
+    if (ImGui::Button("Anuluj")) 
         {
             for (int i=2;i<5;i++)but[i]=false;
             but[6]=false;
@@ -346,30 +376,7 @@ void App::wItemShow(){
     ImGui::End();
 }
 
-//do wypełnienia o poprawność i podłączenie
-void App::wItemAdd(){
-    ImGui::Begin("Dodawanie przedmiotu");;
-    if (ImGui::Button("Wyjdź")) 
-        {
-            but[0]=false;
-        }
-    ImGui::Text("Nazwa: ");
-    ImGui::InputText("##name", buf0, sizeof(buf0));
-    ImGui::Text("Id: ");
-    ImGui::InputText("##id", buf1, sizeof(buf1));
-    ImGui::Text("Ilość: ");
-    ImGui::InputText("##count", buf2, sizeof(buf2));
-    //button 1
-    if (ImGui::Button("Potwierdź")) 
-        {
-            //funckja sprawdzania poprawności zmiennych
 
-            
-
-            but[0]=false;
-        }
-    ImGui::End();
-}
 
 //do wypełnienia o wywołanie funkcji
 void App::wListItems(){
@@ -395,8 +402,9 @@ void App::wOrderShow(){
 }
 void App::wOrderAdd(){
     ImGui::Begin("Dodanie zamówienia");
-    if (ImGui::Button("Wyjdź")) 
+    if (ImGui::Button("Anuluj")) 
         {
+            orderer.order_list.clear();
             but[8]=false;
         }
     //funckjonalność
@@ -406,7 +414,7 @@ void App::wOrderAdd(){
     ImGui::InputText("##destinationOrder", buf1, sizeof(buf1));
     for(int i=0;i< orderer.order_list.size();i++){
         ImGui::Text("Nazwa: ");
-        string name="##name"+i;
+        string name="##name"+std::to_string(i);
         //auto na=orderer.order_list.at(i).name.c_str();
         std::string& s = orderer.order_list.at(i).name;
         char temp[128];
@@ -415,7 +423,7 @@ void App::wOrderAdd(){
         s=temp;
 
         ImGui::Text("Id: ");
-        string name2="##id"+i;
+        string name2="##id"+std::to_string(i);
         //auto d=orderer.order_list.at(i).id_number.c_str();
         std::string& s2 = orderer.order_list.at(i).id_number;
         char temp2[128];
@@ -424,24 +432,22 @@ void App::wOrderAdd(){
         s2=temp2;
 
         ImGui::Text("Ilość: ");
-        string name3="##count"+i;
+        string name3="##count"+std::to_string(i);
         //auto co=orderer.order_list.at(i).unit.c_str();
         double& s3 = orderer.order_list.at(i).unit;
         char temp3[128];
         strncpy(temp3, std::to_string(s3).c_str(), sizeof(temp3));
         if(ImGui::InputText(name3.c_str(), temp3, sizeof(temp3)))
         s3 = std::stod(temp3);
+        
+        std::string label = "Usuń item##" + std::to_string(i);
+        if (ImGui::Button(label.c_str())) 
+        {
+            orderer.order_list.erase(orderer.order_list.begin()+i);
+        }
+        ImGui::Text("");
 
     }
-    /*
-    //wymyśleć rozwiązanie na 50000 różnych inputext
-    ImGui::Text("Nazwa: ");
-    ImGui::InputText("##name", buf0, sizeof(buf0));
-    ImGui::Text("Id: ");
-    ImGui::InputText("##id", buf1, sizeof(buf1));
-    ImGui::Text("Ilość: ");
-    ImGui::InputText("##count", buf2, sizeof(buf2));
-    */
     if (ImGui::Button("Dodaj item")) 
         {
             orderer.addItem("","","1");
@@ -450,9 +456,8 @@ void App::wOrderAdd(){
     //button 1
     if (ImGui::Button("Potwierdź")) 
         {
-            //funckja sprawdzania poprawności zmiennych
-
-            //Storage.addOrder();
+            s = warehouse.orderRequest(orderer.order_list);
+            orderer.order_list.clear();
 
             but[8]=false;
         }
@@ -460,7 +465,7 @@ void App::wOrderAdd(){
 }
 void App::wSupplyshow(){
     ImGui::Begin("Pokazanie zamówienia do magazynu");
-    if (ImGui::Button("Wyjdź")) 
+    if (ImGui::Button("Anuluj")) 
         {
             but[9]=false;
         }
@@ -470,7 +475,7 @@ void App::wSupplyshow(){
 }
 void App::wSupplyAdd(){
     ImGui::Begin("Dodanie zamówienia do magazynu");
-    if (ImGui::Button("Wyjdź")) 
+    if (ImGui::Button("Anuluj")) 
         {
             but[10]=false;
         }
@@ -479,21 +484,52 @@ void App::wSupplyAdd(){
 }
 
 void App::wAgentShow(){
-    ImGui::Begin("Pokazanie magazyniera");
-    if (ImGui::Button("Wyjdź")) 
+    ImGui::Begin("Pokazanie magazynierów");
+    if (ImGui::Button("Anuluj")) 
         {
             but[11]=false;
         }
     //funckjonalność
+    for(int i=0;i< Agents.size();i++){
+        ImGui::Text("Imie: ");
+        string name="##WorkerName"+std::to_string(i);
+        std::string& s = Agents.at(i).name;
+        char temp[128];
+        strncpy(temp, s.c_str(), sizeof(temp));
+        if(ImGui::InputText(name.c_str(), temp, sizeof(temp)))//InputText return true on change
+        s=temp;
+        if(i>=1){
+            std::string label = "Usuń pracownika##" + std::to_string(i);
+            if (ImGui::Button(label.c_str())) 
+            {
+                if(i>=activeAgent)activeAgent=0;
+                Agents.erase(Agents.begin()+i);
+            }
+        }
+        
+        ImGui::Text("");
+
+    }
     ImGui::End();
 }
 void App::wAgentAdd(){
     ImGui::Begin("Dodanie magazyniera");
-    if (ImGui::Button("Wyjdź")) 
+    if (ImGui::Button("Anuluj")) 
         {
+            clearBuf();
             but[12]=false;
         }
     //funckjonalność
+    ImGui::Text("Imie: ");
+    ImGui::InputText("##agentName", buf0, sizeof(buf0));
+    //button 1
+    if (ImGui::Button("Potwierdź")) 
+        {
+            //funckja sprawdzania poprawności zmiennych
+            Agents.push_back(storeman(buf0));
+            clearBuf();
+            but[12]=false;
+        }
     ImGui::End();
 }
 
