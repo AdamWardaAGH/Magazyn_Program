@@ -55,10 +55,7 @@ private:
     storage warehouse;
     supply supplier;
     order orderer;
-    //zmienne do wyświetlania
     string activeItem;
-    order activeOrder;
-    supply activeSupply;
     vector<storeman>Agents;
     int activeAgent;
     string s;

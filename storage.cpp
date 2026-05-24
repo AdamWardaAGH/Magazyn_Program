@@ -31,8 +31,10 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         std::string item_list = "";
         for(auto& i : inventory){
             auto [x, y, z] = i.first.coordinates;
-            item_list += "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
-            "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
+            char temp[512];
+                snprintf(temp, sizeof(temp), "Koordynaty: %i %i %i  Numer id: %s  Nazwa: %s  Ilość: %.2f\n",
+                    x, y, z, i.second.id_number.c_str(), i.second.name.c_str(), i.second.unit);
+                item_list += temp;
         } 
         return item_list;
     }
@@ -42,11 +44,13 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         for(auto& i : inventory){
             if(input==i.second.id_number){
             auto [x, y, z] = i.first.coordinates;
-            item_list += "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
-            "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
-            }
-        } 
-        if(item_list == ""){item_list = "Nieznaleniono, żadnych przedmiotów";};
+            char temp[512];
+                snprintf(temp, sizeof(temp), "Koordynaty: %i %i %i  Numer id: %s  Nazwa: %s  Ilość: %.2f\n",
+                    x, y, z, i.second.id_number.c_str(), i.second.name.c_str(), i.second.unit);
+                item_list += temp;
+            } 
+        }
+        if(item_list == ""){item_list = "Nie znaleniono, żadnych przedmiotów";};
         return item_list;
     }
 
@@ -56,11 +60,13 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
         for(auto& i : inventory){
             if(input==i.second.name){
             auto [x, y, z] = i.first.coordinates;
-            item_list += "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
-            "  Numer id: "+i.second.id_number+"  Nazwa: "+i.second.name+"  Ilość: "+std::to_string(i.second.unit)+"\n";
+            char temp[512];
+                snprintf(temp, sizeof(temp), "Koordynaty: %i %i %i  Numer id: %s  Nazwa: %s  Ilość: %.2f\n",
+                    x, y, z, i.second.id_number.c_str(), i.second.name.c_str(), i.second.unit);
+                item_list += temp;
             }
         }
-        if(item_list == ""){item_list = "Nieznaleniono, żadnych przedmiotów";};
+        if(item_list == ""){item_list = "Nie znaleniono, żadnych przedmiotów";};
         return item_list;
     }
 
@@ -73,10 +79,12 @@ szybszy od std::vector lista gdzie elementy mają unikatowy koordynat
             ss >> x >> comma >> y >> comma >> z;
             try {
                 item& i = inventory.at({x,y,z});
-                item_list = "Koordynaty: " +std::to_string(x)+" "+std::to_string(y)+" "+std::to_string(z)+
-                "  Numer id: "+i.id_number+"  Nazwa: "+i.name+"  Ilość: "+std::to_string(i.unit)+"\n";
+                char temp[512];
+                snprintf(temp, sizeof(temp), "Koordynaty: %i %i %i  Numer id: %s  Nazwa: %s  Ilość: %.2f\n",
+                    x, y, z, i.id_number.c_str(), i.name.c_str(), i.unit);
+                item_list = temp;
             } catch (std::out_of_range& e) {
-                item_list = "Nieznaleniono, żadnych przedmiotów";
+                item_list = "Nie znaleniono, żadnych przedmiotów";
             }
             return item_list;
 

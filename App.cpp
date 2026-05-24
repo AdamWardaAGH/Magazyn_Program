@@ -145,9 +145,7 @@ void App::render() {
     wMan();
 
     //====other windows drawing====
-    if(but[0]){
-        wItemAdd(); //
-    }
+    
     if(but[6]){
         //if active item empty
         //ImGui::Text("Could not find the item, try again");
@@ -240,9 +238,9 @@ void App::wMain(){
     }
     if(but[2]||but[3]||but[4])
     {
-        if(but[2])ImGui::InputText("Koordynaty", searchbuf, sizeof(searchbuf));
-        else if(but[3])ImGui::InputText("Nazwa", searchbuf, sizeof(searchbuf));
-        else if(but[4])ImGui::InputText("ID", searchbuf, sizeof(searchbuf));
+        if(but[2])ImGui::InputText("Koordynaty##Input", searchbuf, sizeof(searchbuf));
+        else if(but[3])ImGui::InputText("Nazwa##Input", searchbuf, sizeof(searchbuf));
+        else if(but[4])ImGui::InputText("ID##Input", searchbuf, sizeof(searchbuf));
         if (ImGui::Button("Szukaj")) 
         {
             if(but[2])activeItem = warehouse.findItems_by_coord(searchbuf);
@@ -369,10 +367,10 @@ void App::wItemShow(){
             for (int i=2;i<5;i++)but[i]=false;
             but[6]=false;
         }
-    //if 
-    ImGui::Text("Nazwa: ");
+    ImGui::Text(activeItem.c_str());
+    /*ImGui::Text("Nazwa: ");
     ImGui::Text("Id: ");
-    ImGui::Text("Waga: ");
+    ImGui::Text("Waga: ");*/
     ImGui::End();
 }
 
@@ -436,8 +434,8 @@ void App::wOrderAdd(){
         //auto co=orderer.order_list.at(i).unit.c_str();
         double& s3 = orderer.order_list.at(i).unit;
         char temp3[128];
-        strncpy(temp3, std::to_string(s3).c_str(), sizeof(temp3));
-        if(ImGui::InputText(name3.c_str(), temp3, sizeof(temp3)))
+        snprintf(temp3, sizeof(temp3), "%.2f", s3);
+        if(ImGui::InputText(name3.c_str(), temp3, sizeof(temp3), ImGuiInputTextFlags_CharsDecimal))
         s3 = std::stod(temp3);
         
         std::string label = "Usuń item##" + std::to_string(i);
