@@ -14,7 +14,8 @@ App::App() {
     ImGui_ImplOpenGL3_Init("#version 130");
     initPolish();
 
-    /* color customization
+    /*
+    //color customization
     ImGuiStyle& style = ImGui::GetStyle();
     style.Colors[ImGuiCol_WindowBg]        = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // tło okna
     style.Colors[ImGuiCol_Button]          = ImVec4(0.2f, 0.4f, 0.8f, 1.0f); // przycisk
@@ -23,8 +24,27 @@ App::App() {
     style.Colors[ImGuiCol_FrameBg]         = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // tło inputa
     style.Colors[ImGuiCol_TitleBg]         = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // pasek tytułu
     style.Colors[ImGuiCol_TitleBgActive]   = ImVec4(0.2f, 0.2f, 0.2f, 1.0f); // pasek tytułu aktywny
-    
     */
+   ImGui::StyleColorsDark();
+    ImGuiStyle& s = ImGui::GetStyle();
+    s.Colors[ImGuiCol_WindowBg] = ImVec4(0.08f, 0.09f, 0.09f, 1.0f);
+    s.Colors[ImGuiCol_ChildBg] = ImVec4(0.10f, 0.11f, 0.12f, 1.0f);
+    s.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.05f, 0.07f, 0.09f, 1.0f);
+    s.Colors[ImGuiCol_TitleBg] = ImVec4(0.07f, 0.08f, 0.10f, 1.0f);
+    s.Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.44f, 0.71f, 1.0f);
+    s.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.22f, 0.54f, 0.87f, 1.0f);
+    s.Colors[ImGuiCol_ButtonActive] = ImVec4(0.05f, 0.27f, 0.49f, 1.0f);
+    s.Colors[ImGuiCol_FrameBg] = ImVec4(0.12f, 0.13f, 0.15f, 1.0f);
+    s.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.16f, 0.18f, 0.21f, 1.0f);
+    s.Colors[ImGuiCol_Header] = ImVec4(0.09f, 0.37f, 0.65f, 1.0f);
+    s.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.22f, 0.54f, 0.87f, 1.0f);
+    s.Colors[ImGuiCol_Separator] = ImVec4(0.16f, 0.18f, 0.20f, 1.0f);
+    s.Colors[ImGuiCol_CheckMark] = ImVec4(0.22f, 0.54f, 0.87f, 1.0f);
+    s.Colors[ImGuiCol_SliderGrab] = ImVec4(0.22f, 0.54f, 0.87f, 1.0f);
+    s.Colors[ImGuiCol_Tab] = ImVec4(0.10f, 0.11f, 0.13f, 1.0f);
+    s.Colors[ImGuiCol_TabHovered] = ImVec4(0.22f, 0.54f, 0.87f, 1.0f);
+    s.Colors[ImGuiCol_TabActive] = ImVec4(0.09f, 0.37f, 0.65f, 1.0f);
+    
 }
 
 //destruktor
@@ -85,28 +105,13 @@ void App::render() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
-
-    //okno 1 - z pierwszych testów interfejsu
-    /*
-    ImGui::Begin("Magazyn");
-    ImGui::Text("Działa!");
-    //button 1
-    if (ImGui::Button("Button")) 
-        {
-            but1 = !but1;
-        }
-    if(but1){
-        ImGui::InputText("Etykieta", buf1, sizeof(buf1));
-        ImGui::Text("Wpisano: %s", buf1);
-    }
-    ImGui::End();*/
-    //koniec okna 1
-
-    //okno 2
+    //okno
     ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(440, 600), ImGuiCond_Always);
     ImGui::Begin("Główne okno", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-    ImGui::Text("Witaj w systemie magazynowym! Co dzisiaj robimy przyjacielu?");
+    time(&timestamp);
+    ImGui::Text("%s", ctime(&timestamp));
+    ImGui::Text("\nWitaj w systemie magazynowym! Co dzisiaj robimy przyjacielu?");
     //if niedobory
     //ImGui::Text("Wykryto niedobory w magazynie! Chcesz zamówić?");
     //if (ImGui::Button("Zamów")) 
@@ -126,6 +131,9 @@ void App::render() {
     if (ImGui::Button("Pokaż item")) 
         {
             but[1] = !but[1];
+            //make sure others are not active
+            but[13]=false;
+            but[14]=false;
         }
     if(but[1]){
         ImGui::Text("Jaki sposób wyszukiwania?");
@@ -156,9 +164,9 @@ void App::render() {
     }
     if(but[2]||but[3]||but[4])
     {
-        if(but[2])ImGui::InputText("Koordynaty", buf2, sizeof(buf2));
-        else if(but[3])ImGui::InputText("Nazwa", buf2, sizeof(buf2));
-        else if(but[4])ImGui::InputText("ID", buf2, sizeof(buf2));
+        if(but[2])ImGui::InputText("Koordynaty", searchbuf, sizeof(searchbuf));
+        else if(but[3])ImGui::InputText("Nazwa", searchbuf, sizeof(searchbuf));
+        else if(but[4])ImGui::InputText("ID", searchbuf, sizeof(searchbuf));
         if (ImGui::Button("Szukaj")) 
         {
             but[6] = true;
@@ -181,10 +189,18 @@ void App::render() {
     if (ImGui::Button("Pokaż zamówienie")) 
         {
             but[13]=!but[13];
+            //make sure others are not active
+            but[1] =false;
+            but[2] =false;
+            but[3] =false;
+            but[4] =false;
+            but[14]=false;
         }
     if (but[13]){
         ImGui::Text("");
-        if (ImGui::Button("Dodaj zamówienie")) 
+        std::string id;//fhuef
+            ImGui::InputText("Id", searchbuf, sizeof(searchbuf));
+        if (ImGui::Button("Szukaj")) 
         {
             but[8] = !but[8];
         }
@@ -197,14 +213,31 @@ void App::render() {
     ImGui::Text("Uzupełnianie braków");
     if (ImGui::Button("Pokaż zamówienie do magazynu")) 
         {
-            but[9]=!but[9];
+            but[14]=!but[14];
+            //make sure others are not active
+            but[1] =false;
+            but[2] =false;
+            but[3] =false;
+            but[4] =false;
+            but[13]=false;
+            
         }
+    if(but[14]){
+        ImGui::Text("");
+        std::string id;//fefu
+            ImGui::InputText("Id", searchbuf, sizeof(searchbuf));
+        if (ImGui::Button("Szukaj")) 
+        {
+            but[9] = !but[9];
+        }
+    }
+        
     //show item
     if (ImGui::Button("Dodaj zamówienie do magazynu")) 
         {
             but[10] = !but[10];
         }
-        //zależne od funkcjonalności magazyniera
+    //zależne od funkcjonalności magazyniera
     /*if (ImGui::Button("Pokaż magazyniera")) 
         {
             but[11]=!but[11];
@@ -216,7 +249,11 @@ void App::render() {
         }
             */
 
-
+    ImGui::Text("");
+    if (ImGui::Button("Wyjdź")) 
+        {
+            running=false;
+        }
     ImGui::End();
     //koniec okna 2
 
@@ -277,8 +314,7 @@ void App::wItemShow(){
 
 //do wypełnienia o poprawność i podłączenie
 void App::wItemAdd(){
-    ImGui::Begin("Dodawanie przedmiotu");
-    std::cout<<"Dodajemy ITem skurczybyki!\n";
+    ImGui::Begin("Dodawanie przedmiotu");;
     if (ImGui::Button("Wyjdź")) 
         {
             but[0]=false;

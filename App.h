@@ -1,6 +1,8 @@
 #pragma once
 //basic imports
 //UWAGA - KAŻDY PLIK TRZEBA DODAĆ DO CMAKELISTS
+#include <ctime>
+#include <iostream>
 
 //graphics import
 #include <SDL.h>
@@ -8,7 +10,6 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
 #include <SDL_opengl.h>
-#include <iostream>
 
 class App {
 private:
@@ -24,6 +25,8 @@ private:
     char buf0[256] = "";
     char buf1[256] = "";
     char buf2[256] = "";
+    char searchbuf[256]="";
+    time_t timestamp;
 
     void wItemShow();
     void wItemAdd();
@@ -73,6 +76,7 @@ Buttons:
 11- wAgentShow
 12- wAgentAdd
 13- logic of OrderShow
+14- logic of SupplyShow
 
 */
 
@@ -86,6 +90,15 @@ po buildzie trzeba obok exe dać SDL2.dll i plik czcionki - wtedy działą
 
 git - wstawianie rzeczy
 git commit -am 'kommento'
-git push
+git push origin frontend
 
+komendy do branch integracja
+git commit -am "preparing for integration"
+git push origin frontend
+git fetch
+git checkout backend
+git pull
+git checkout frontend
+git checkout -b integracja
+git merge backend
 */
