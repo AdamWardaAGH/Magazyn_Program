@@ -411,8 +411,7 @@ void App::wOrderAdd(){
         std::string& s = orderer.order_list.at(i).name;
         char temp[128];
         strncpy(temp, s.c_str(), sizeof(temp));
-        //char temp[128]=orderer.order_list.at(i).name.c_str();
-        ImGui::InputText(name.c_str(), temp, sizeof(temp));
+        if(ImGui::InputText(name.c_str(), temp, sizeof(temp)))//InputText return true on change
         s=temp;
 
         ImGui::Text("Id: ");
@@ -421,8 +420,7 @@ void App::wOrderAdd(){
         std::string& s2 = orderer.order_list.at(i).id_number;
         char temp2[128];
         strncpy(temp2, s2.c_str(), sizeof(temp2));
-        //char temp2[128]=orderer.order_list.at(i).id_number.c_str();
-        ImGui::InputText(name2.c_str(), temp2, sizeof(temp2));
+        if(ImGui::InputText(name2.c_str(), temp2, sizeof(temp2)))
         s2=temp2;
 
         ImGui::Text("Ilość: ");
@@ -431,8 +429,7 @@ void App::wOrderAdd(){
         double& s3 = orderer.order_list.at(i).unit;
         char temp3[128];
         strncpy(temp3, std::to_string(s3).c_str(), sizeof(temp3));
-        //char temp3[128]=orderer.order_list.at(i).unit.c_str();
-        ImGui::InputText(name3.c_str(), temp3, sizeof(temp3));
+        if(ImGui::InputText(name3.c_str(), temp3, sizeof(temp3)))
         s3 = std::stod(temp3);
 
     }

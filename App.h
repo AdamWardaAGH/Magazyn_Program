@@ -6,6 +6,7 @@
 #include "storage.h"
 #include "order.h"
 #include "supply.h"
+#include "storeman.h"
 
 //graphics import
 #include <SDL.h>
