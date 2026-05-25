@@ -81,9 +81,9 @@ Buttons:
 5 - showItemList
 6 - display/search
     order
-7 - wOrderShow
+7 - orderShow
 8 - wOrderAdd
-9 - wSupplyshow
+9 - Supplyshow
 10- wSupplyAdd
 11- wAgentShow
 12- wAgentAdd

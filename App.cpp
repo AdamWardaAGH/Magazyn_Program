@@ -156,24 +156,22 @@ void App::render() {
     if(but[5]){
         wListItems();
     }
-    if(but[7]){
-        wOrderShow();
-    }
     if(but[8]){
         wOrderAdd();
     }
-    if(but[9]){
-        wSupplyshow();
-    }
+    wOrderShow();
+    
     if(but[10]){
         wSupplyAdd();
     }
+    wSupplyshow();
     if(but[11]){
         wAgentShow();
     }
     if(but[12]){
         wAgentAdd();
     }
+    
     ImGui::Render();
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -308,7 +306,7 @@ void App::wMain(){
             ImGui::InputText("Id", searchbuf, sizeof(searchbuf));
         if (ImGui::Button("Szukaj")) 
         {
-            but[9] = !but[9];
+            but[] = !but[];
         }
     }*/
         
@@ -419,14 +417,59 @@ void App::wListItems(){
 
 //do wypełnienia o wszystko pretty much
 void App::wOrderShow(){
-    ImGui::Begin("Pokazanie zamówienia");
-    if (ImGui::Button("Wyjdź")) 
-        {
-            but[7]=false;
+    if(!warehouse.order_request.empty())
+    {
+        ImGui::Begin("Pokazanie zamówienia");
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.1f, 1.0f));
+        if (ImGui::Button("Anuluj zamówienie")) 
+            {
+                warehouse.order_request.clear();
+            }
+        ImGui::PopStyleColor();
+        for(int i=0;i< orderer.order_list.size();i++){
+            ImGui::Text("Nazwa: ");
+            ImGui::SameLine(); 
+            //auto na=orderer.order_list.at(i).name.c_str();
+            std::string& s = orderer.order_list.at(i).name;
+            ImGui::Text( s.c_str());
+            
+
+            ImGui::Text("Id: ");
+            ImGui::SameLine(); 
+            std::string& s2 = orderer.order_list.at(i).id_number;
+            ImGui::Text( s2.c_str());
+
+            ImGui::Text("Ilość: ");
+            ImGui::SameLine(); 
+            double& s3 = orderer.order_list.at(i).unit;
+            char temp3[128];
+            snprintf(temp3, sizeof(temp3), "%.2f", s3);
+            ImGui::Text( temp3);
+            ImGui::Text("");
+
         }
-    //funckjonalność
-    //showOrder(activeOrder);
-    ImGui::End();
+        if (ImGui::Button("Wykonaj")) 
+            {
+                s = Agents.at(activeAgent).executeOrder("Zaakceptowano",warehouse);
+                if(s=="Przedmioty przeniesione do zamówienia"){
+                    but[7]=true;
+                    orderer.order_list.clear();
+                    warehouse.order_request.clear();
+                    s="";
+                }
+            }
+        ImGui::End();
+    }
+    if(but[7])
+    {
+        ImGui::Begin("Pokazanie zamówienia");
+        ImGui::Text("Poprawnie zakończono zamówienie");
+        if (ImGui::Button("Zakończ")) 
+            {
+                but[7]=false;
+            }
+        ImGui::End();
+    }
 }
 void App::wOrderAdd(){
     ImGui::Begin("Dodanie zamówienia");
@@ -436,10 +479,10 @@ void App::wOrderAdd(){
             but[8]=false;
         }
     //funckjonalność
-    ImGui::Text("Id: ");
-    ImGui::InputText("##idOrder", buf0, sizeof(buf0));
-    ImGui::Text("Cel docelowy: ");
-    ImGui::InputText("##destinationOrder", buf1, sizeof(buf1));
+    //ImGui::Text("Id: ");
+    //ImGui::InputText("##idOrder", buf0, sizeof(buf0));
+    //ImGui::Text("Cel docelowy: ");
+    //ImGui::InputText("##destinationOrder", buf1, sizeof(buf1));
     for(int i=0;i< orderer.order_list.size();i++){
         ImGui::Text("Nazwa: ");
         string name="##name"+std::to_string(i);
@@ -468,7 +511,7 @@ void App::wOrderAdd(){
         if(ImGui::InputText(name3.c_str(), temp3, sizeof(temp3), ImGuiInputTextFlags_CharsDecimal))
         s3 = std::stod(temp3);
         
-        std::string label = "Usuń item##" + std::to_string(i);
+        std::string label = "Usuń przedmiot##" + std::to_string(i);
         if (ImGui::Button(label.c_str())) 
         {
             orderer.order_list.erase(orderer.order_list.begin()+i);
@@ -476,7 +519,7 @@ void App::wOrderAdd(){
         ImGui::Text("");
 
     }
-    if (ImGui::Button("Dodaj item")) 
+    if (ImGui::Button("Dodaj przedmiot")) 
         {
             orderer.addItem("","","1");
         }
@@ -489,7 +532,7 @@ void App::wOrderAdd(){
         {
             s = warehouse.orderRequest(orderer.order_list);
             if(s=="Zaakceptowano"){
-                orderer.order_list.clear();
+                //orderer.order_list.clear();
                 s="";
                 but[8]=false;
             }
@@ -497,22 +540,125 @@ void App::wOrderAdd(){
     ImGui::End();
 }
 void App::wSupplyshow(){
-    ImGui::Begin("Pokazanie zamówienia do magazynu");
-    if (ImGui::Button("Anuluj")) 
-        {
-            but[9]=false;
+    
+    if(!warehouse.supply_request.empty())
+    {
+        ImGui::Begin("Pokazanie zamówienia do magazynu");
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.1f, 1.0f));
+        if (ImGui::Button("Anuluj zamówienie")) 
+            {
+                warehouse.supply_request.clear();
+            }
+        ImGui::PopStyleColor();
+        for(int i=0;i< supplier.supply_list.size();i++){
+            ImGui::Text("Nazwa: ");
+            ImGui::SameLine(); 
+            std::string& s = supplier.supply_list.at(i).name;
+            ImGui::Text( s.c_str());
+            
+
+            ImGui::Text("Id: ");
+            ImGui::SameLine(); 
+            std::string& s2 = supplier.supply_list.at(i).id_number;
+            ImGui::Text( s2.c_str());
+
+            ImGui::Text("Ilość: ");
+            ImGui::SameLine(); 
+            double& s3 = supplier.supply_list.at(i).unit;
+            char temp3[128];
+            snprintf(temp3, sizeof(temp3), "%.2f", s3);
+            ImGui::Text( temp3);
+            ImGui::Text("");
+
         }
-    //funckjonalność
-    ImGui::Text("Zamówienie jest takie i t\nkie");
-    ImGui::End();
+        if (ImGui::Button("Wykonaj")) 
+            {
+                s = Agents.at(activeAgent).executeSupply("Zaakceptowano",warehouse);
+                if(s=="Przedmioty przeniesione do magazynu"){
+                    but[9]=true;
+                    supplier.supply_list.clear();
+                    warehouse.supply_request.clear();
+                    s="";
+                }
+            }
+        ImGui::End();
+    }
+    if(but[9])
+    {
+        ImGui::Begin("Pokazanie zamówienia do magazynu");
+        ImGui::Text("Poprawnie zakończono zamówienie");
+        if (ImGui::Button("Zakończ")) 
+            {
+                but[9]=false;
+            }
+        ImGui::End();
+    }
 }
 void App::wSupplyAdd(){
-    ImGui::Begin("Dodanie zamówienia do magazynu");
+    ImGui::Begin("Dodawanie zamówienia do magazynu");
     if (ImGui::Button("Anuluj")) 
         {
+            supplier.supply_list.clear();
             but[10]=false;
         }
     //funckjonalność
+    //ImGui::Text("Id: ");
+    //ImGui::InputText("##idOrder", buf0, sizeof(buf0));
+    //ImGui::Text("Cel docelowy: ");
+    //ImGui::InputText("##destinationOrder", buf1, sizeof(buf1));
+    for(int i=0;i< supplier.supply_list.size();i++){
+        ImGui::Text("Nazwa: ");
+        string name="##name"+std::to_string(i);
+        //auto na=orderer.order_list.at(i).name.c_str();
+        std::string& s = supplier.supply_list.at(i).name;
+        char temp[128];
+        strncpy(temp, s.c_str(), sizeof(temp));
+        if(ImGui::InputText(name.c_str(), temp, sizeof(temp)))//InputText return true on change
+        s=temp;
+
+        ImGui::Text("Id: ");
+        string name2="##id"+std::to_string(i);
+        //auto d=orderer.order_list.at(i).id_number.c_str();
+        std::string& s2 = supplier.supply_list.at(i).id_number;
+        char temp2[128];
+        strncpy(temp2, s2.c_str(), sizeof(temp2));
+        if(ImGui::InputText(name2.c_str(), temp2, sizeof(temp2)))
+        s2=temp2;
+
+        ImGui::Text("Ilość: ");
+        string name3="##count"+std::to_string(i);
+        //auto co=orderer.order_list.at(i).unit.c_str();
+        double& s3 = supplier.supply_list.at(i).unit;
+        char temp3[128];
+        snprintf(temp3, sizeof(temp3), "%.2f", s3);
+        if(ImGui::InputText(name3.c_str(), temp3, sizeof(temp3), ImGuiInputTextFlags_CharsDecimal))
+        s3 = std::stod(temp3);
+        
+        std::string label = "Usuń przedmiot##" + std::to_string(i);
+        if (ImGui::Button(label.c_str())) 
+        {
+            supplier.supply_list.erase(supplier.supply_list.begin()+i);
+        }
+        ImGui::Text("");
+
+    }
+    if (ImGui::Button("Dodaj przedmiot")) 
+        {
+            supplier.addItem("","","1");
+        }
+    
+    //button 1
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.1f, 0.1f, 1.0f));
+    ImGui::Text(s.c_str());
+    ImGui::PopStyleColor();
+    if (ImGui::Button("Potwierdź")) 
+        {
+            s = warehouse.supplyRequest(supplier.supply_list);
+            if(s=="Zaakceptowano"){
+                s="";
+                but[10]=false;
+            }
+        }
     ImGui::End();
 }
 
