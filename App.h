@@ -39,6 +39,7 @@ private:
     void wMan();
     void wItemShow();
     void wListItems();
+    void wMap();
 
     void wOrderShow();
     void wOrderAdd();
@@ -59,6 +60,9 @@ private:
     vector<storeman>Agents;
     int activeAgent;
     string s;
+    //mapa
+    int curRack=0;
+    float tileSize = 25.0f;
 public:
     App();
     ~App();

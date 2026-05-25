@@ -1,7 +1,7 @@
 #include "App.h"
 
 //konstruktor
-App::App() : warehouse(1, 10, 1, 20, 1, 15){
+App::App() : warehouse(0, 10, 0, 20, 0, 15){
     SDL_Init(SDL_INIT_VIDEO);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -143,6 +143,7 @@ void App::render() {
     ImGui::NewFrame();
     wMain();
     wMan();
+    wMap();
 
     //====other windows drawing====
     
@@ -202,7 +203,7 @@ void App::wMain(){
     //item
     ImGui::Text("Przedmioty");
     //show item
-    if (ImGui::Button("Pokaż item")) 
+    if (ImGui::Button("Pokaż przedmiot")) 
         {
             but[1] = !but[1];
             //make sure others are not active
@@ -238,7 +239,7 @@ void App::wMain(){
     }
     if(but[2]||but[3]||but[4])
     {
-        if(but[2])ImGui::InputText("Koordynaty##Input", searchbuf, sizeof(searchbuf));
+        if(but[2])ImGui::InputText("Koordynaty (oddzielone przecinkiem)##Input", searchbuf, sizeof(searchbuf));
         else if(but[3])ImGui::InputText("Nazwa##Input", searchbuf, sizeof(searchbuf));
         else if(but[4])ImGui::InputText("ID##Input", searchbuf, sizeof(searchbuf));
         if (ImGui::Button("Szukaj")) 
@@ -254,7 +255,7 @@ void App::wMain(){
         }
     }
     //show all items
-    if (ImGui::Button("Wyświetl listę item")) 
+    if (ImGui::Button("Wyświetl listę przedmiotów")) 
         {
             but[5] = !but[5];
         }
@@ -264,7 +265,7 @@ void App::wMain(){
     //order
     //show order
     ImGui::Text("Zamówienia");
-    if (ImGui::Button("Pokaż zamówienie")) 
+    /*if (ImGui::Button("Pokaż zamówienie")) 
         {
             but[13]=!but[13];
             //make sure others are not active
@@ -282,7 +283,7 @@ void App::wMain(){
         {
             but[7] = !but[7];
         }
-    }
+    }*/
     //add order
     if (ImGui::Button("Dodaj zamówienie")) 
         {
@@ -291,7 +292,7 @@ void App::wMain(){
     //supply
     //show supply
     ImGui::Text("Uzupełnianie braków");
-    if (ImGui::Button("Pokaż zamówienie do magazynu")) 
+    /*if (ImGui::Button("Pokaż zamówienie do magazynu")) 
         {
             but[14]=!but[14];
             //make sure others are not active
@@ -309,14 +310,15 @@ void App::wMain(){
         {
             but[9] = !but[9];
         }
-    }
+    }*/
         
     //add supply
     if (ImGui::Button("Dodaj zamówienie do magazynu")) 
         {
             but[10] = !but[10];
         }
-    //zależne od funkcjonalności magazyniera
+    //storeman
+    ImGui::Text("Pracownicy");
     if (ImGui::Button("Zarządzaj magazynierami")) 
         {
             but[11]=!but[11];
@@ -356,6 +358,34 @@ void App::wMan(){
         }
     ImGui::EndCombo();
     }
+    ImGui::End();
+}
+
+void App::wMap(){
+    ImGui::SetNextWindowPos(ImVec2(690, 50), ImGuiCond_Always);
+    ImGui::Begin("Mapa", nullptr, ImGuiWindowFlags_NoMove);
+    ImGui::SliderInt("Piętro", &curRack, 0, warehouse.rack_max);
+    ImGui::BeginChild("##map_scroll", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+    for (int y = 0; y < warehouse.row_max; y++) {
+        for (int x = 0; x < warehouse.column_max; x++) {
+            if (x > 0) ImGui::SameLine(); 
+            ImVec4 kolor;
+            char temp[256];
+            snprintf(temp, sizeof(temp), "%i,%i,%i",
+                    x, y, curRack);
+            string tileP = temp;
+            ImGui::BeginDisabled(warehouse.findItems_by_coord(tileP)=="Nie znaleniono, żadnych przedmiotów");
+            std::string id = "##tile" + std::to_string(x) + "_" + std::to_string(y);
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.5f, 0.2f, 1.0f));
+            if (ImGui::Button(id.c_str(), ImVec2(tileSize, tileSize))) {
+                activeItem=warehouse.findItems_by_coord(tileP);
+                but[6] = true;
+            }
+            ImGui::EndDisabled();
+            ImGui::PopStyleColor();
+        }
+    }
+    ImGui::EndChild();
     ImGui::End();
 }
 
@@ -452,12 +482,17 @@ void App::wOrderAdd(){
         }
     
     //button 1
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.1f, 0.1f, 1.0f));
+    ImGui::Text(s.c_str());
+    ImGui::PopStyleColor();
     if (ImGui::Button("Potwierdź")) 
         {
             s = warehouse.orderRequest(orderer.order_list);
-            orderer.order_list.clear();
-
-            but[8]=false;
+            if(s=="Zaakceptowano"){
+                orderer.order_list.clear();
+                s="";
+                but[8]=false;
+            }
         }
     ImGui::End();
 }
